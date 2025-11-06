@@ -45,7 +45,7 @@ class Entity(pg.sprite.Sprite):
         # 이동
         self.rect.x += steps[idx].x
         self.rect.y += steps[idx].y
-        self.position = self.rect.topleft
+        self.position = pg.Vector2(self.rect.topleft[0], self.rect.topleft[1])
 
         return steps[idx] # 이동한 거리 반환
 
@@ -69,5 +69,4 @@ class Entity(pg.sprite.Sprite):
             self.dropping = False
 
     def update(self):
-        # 이동
-        self.gravity()
+        self.gravity() # 중력 적용

@@ -1,4 +1,3 @@
-#test
 import Lobby
 from map.init_setting import init_setting
 init_setting()

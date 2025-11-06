@@ -12,13 +12,15 @@ players = None
 grounds = None
 guns = None
 bullets = None
+mines = None
 WHITE = (255, 255, 255)  # 흰색 배경
 background_image = None
 
 def createMap():
+    from Select_feature import player1_gun, player2_gun, player1_skill, player2_skill
     from .init_setting import tile_size, screen, screen_width, screen_height
     from Select_map import selected_map
-    global player1, player2, players, guns, grounds, bullets, WHITE, background_image
+    global player1, player2, players, guns, grounds, bullets, WHITE, background_image, mines
 
     screen.fill(WHITE) # 배경화면 그리기 (나중에는 이미지 삽입으로 변경)
 
@@ -56,11 +58,11 @@ def createMap():
                 if data[y][x] == 'P1':
                     image = pg.image.load("./assets/player1.png").convert_alpha()
                     
-                    player1 = Character(1, image, pg.Vector2(x*tile_size, y*tile_size), 50, [pg.K_a, pg.K_d, pg.K_w, pg.K_s])
+                    player1 = Character(1, image, pg.Vector2(x*tile_size, y*tile_size), 50, [pg.K_a, pg.K_d, pg.K_w, pg.K_s, pg.K_q])
                 elif data[y][x] == 'P2':
                     image = pg.image.load("./assets/player2.png").convert_alpha()
 
-                    player2 = Character(2, image, pg.Vector2(x*tile_size, y*tile_size), 50, [pg.K_j, pg.K_l, pg.K_i, pg.K_k])
+                    player2 = Character(2, image, pg.Vector2(x*tile_size, y*tile_size), 50, [pg.K_j, pg.K_l, pg.K_i, pg.K_k, pg.K_o])
                 elif data[y][x] == 'Gm':
                     # 임시로 바닥 이미지 생성 (추후에 삭제)
                     image = pg.image.load("./assets/mid_ground.png").convert_alpha()
@@ -79,13 +81,16 @@ def createMap():
                     grounds.add(ground)
 
         # 플레이어 총 생성
-        player1.getGun("pistol")  # 플레이어 총 생성 (임시 이미지 사용)
-        player2.getGun("pistol")  # 플레이어 총 생성 (임시 이미지 사용)
+        player1.getGun(player1_gun)  # 플레이어 총 생성
+        player2.getGun(player2_gun)  # 플레이어 총 생성
+        player1.getSkill(player1_skill)  # 플레이어 스킬 생성
+        player2.getSkill(player2_skill)  # 플레이어 스킬 생성
         players.add(player1, player2)
 
         guns = pg.sprite.Group()  # 총 그룹 생성
         guns.add(player1.gun, player2.gun)  # 총을 그룹에 추가
         
         bullets = pg.sprite.Group()  # 총알 그룹 생성
+        mines = pg.sprite.Group()  # 지뢰 그룹 생성
     else:
         print("폴더에 맵이 없습니다")

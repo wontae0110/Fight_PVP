@@ -1,6 +1,7 @@
 import pygame as pg
 from entity import Entity
 from item.Pistol import Pistol
+from Tool import secondToTick
 
 class Character(Entity):
     def __init__(self, type:int, image, position: pg.Vector2, size: int, move_keys: list):
@@ -15,6 +16,15 @@ class Character(Entity):
         self.jump_power = 0 # 점프 힘
         self.jump_speed = (15) # 점프 속도
         self._prev_jump_key = False # 이전 프레임 점프 키 상태
+        self.skill = None # 스킬
+        self.original_image = self.image.copy()  # 원본 이미지 저장
+        self.damage_effect_time = 0  # 데미지 효과 지속 시간
+        self.DAMAGE_EFFECT_DURATION = secondToTick(0.5)  # 데미지 효과 지속 시간 (틱)
+
+    def getSkill(self, skillType: str):
+        if skillType == "mine":
+            from skill.MineSkill import MineSkill
+            self.skill = MineSkill()
 
     def getGun(self, gunType: str): #image, size: int, bullet_speed: int
         if self.type == 1:
@@ -56,6 +66,10 @@ class Character(Entity):
         else:
             self.didAttack = False
 
+        if keys[self.move_keys[4]]: # 스킬 사용
+            if self.skill:
+                self.skill.use(self)
+
         return move_dest
     
     def isCollide(self, move: pg.Vector2): # 충돌 여부 확인
@@ -92,6 +106,13 @@ class Character(Entity):
     
     def damage(self, damage: int): # 피해 받기
         self.health -= damage
+        # 데미지 효과 시작
+        self.damage_effect_time = self.DAMAGE_EFFECT_DURATION
+        # 이미지를 빨간색으로 변경
+        red_image = self.original_image.copy()
+        red_image.fill((255, 0, 0, 128), special_flags=pg.BLEND_RGBA_MULT)
+        self.image = red_image
+        
         if self.health <= 0:
             self.kill()  # 캐릭터 제거
     
@@ -106,6 +127,15 @@ class Character(Entity):
         if move.y == 0:  # 천장에 닿았을 때
             self.jump_power = 0
 
+        # 데미지 효과 업데이트
+        if self.damage_effect_time > 0:
+            self.damage_effect_time -= 1
+            if self.damage_effect_time <= 0:
+                # 효과 시간이 끝나면 원래 이미지로 복구
+                self.image = self.original_image.copy()
+
         # 총 위치 업데이트
         self.gun.setLocation(pg.Vector2((self.rect.left + self.rect.right) / 2, (self.rect.top + self.rect.bottom) / 2))
         self.gun.turn(self.gun_turn_angle)  # 총 회전
+        self.gun.update()  # 총 업데이트
+        self.skill.update()  # 스킬 업데이트

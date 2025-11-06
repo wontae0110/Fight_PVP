@@ -1,5 +1,5 @@
-import pygame as py
-import os
+import pygame as pg
+import sys
 
 def draw_text_with_outline(text, font, text_color, outline_color, pos, surface):
     x, y = pos
@@ -24,8 +24,8 @@ def setting():
     RED = (255, 0, 0)
 
     # 폰트
-    font_current = py.font.SysFont(None, 50)
-    font_other = py.font.SysFont(None, 35)
+    font_current = pg.font.SysFont(None, 50)
+    font_other = pg.font.SysFont(None, 35)
 
     setting_option = ["select map", "control", "go to lobby"]
     current_index = 0
@@ -48,17 +48,19 @@ def setting():
         if next_map:
             draw_text_with_outline(next_map, font_other, BLACK, WHITE, (screen_width // 2, screen_height // 2 + 40), screen)
 
-        for event in py.event.get():
-            if event.type == py.QUIT:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
                 running = False
-            elif event.type == py.KEYDOWN:
-                if event.key in [py.K_w, py.K_UP]:
+                pg.quit()
+                sys.exit()
+            elif event.type == pg.KEYDOWN:
+                if event.key in [pg.K_w, pg.K_UP]:
                     if current_index > 0:
                         current_index -= 1
-                elif event.key in [py.K_s, py.K_DOWN]:
+                elif event.key in [pg.K_s, pg.K_DOWN]:
                     if current_index < len(setting_option) - 1:
                         current_index += 1
-                elif event.key in [py.K_SPACE, py.K_RETURN]:
+                elif event.key in [pg.K_SPACE, pg.K_RETURN]:
                     if current_map == "select map":
                         from Select_map import select_map
                         select_map()
@@ -68,4 +70,4 @@ def setting():
                         running = False
                         break
 
-        py.display.flip()
+        pg.display.flip()

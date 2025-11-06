@@ -13,6 +13,9 @@ class Gun(pg.sprite.Sprite, metaclass=ABCMeta):
         self.turnedImage = []
         self.bullet_speed = bullet_speed  # 총알 속도 설정
 
+        self.init_attack_cooltime = 1  # 공격 속도 설정 (발사 간격) (tick 단위)
+        self.cur_attack_cooltime = 0  # 현재 공격 쿨타임 (tick 단위)
+
         for i in range(0, 360):
             rotated_image = pg.transform.rotate(self.image, -i)
             self.turnedImage.append(rotated_image)
@@ -37,4 +40,5 @@ class Gun(pg.sprite.Sprite, metaclass=ABCMeta):
 
 
     def update(self):
-        pass
+        if self.cur_attack_cooltime > 0:
+            self.cur_attack_cooltime -= 1

@@ -1,7 +1,8 @@
-import pygame as py
+import pygame as pg
 import sys
 from InGame import startGame
 from map import createMap
+from Tool import draw_text_with_outline
 
 def start_lobby():
     from map.init_setting import screen_width, screen_height, screen
@@ -14,8 +15,8 @@ def start_lobby():
     BLACK = (0, 0, 0)
 
     # 글꼴 설정
-    title_font = py.font.SysFont(None, 50)
-    menu_font = py.font.SysFont(None, 40)
+    title_font = pg.font.SysFont(None, 50)
+    menu_font = pg.font.SysFont(None, 40)
 
     # 메뉴 항목
     menu_items = [
@@ -29,27 +30,25 @@ def start_lobby():
     # 메인 루프 
     running = True
     while running:
-        image = py.image.load("./assets/lobby_background.png").convert() # 배경 이미지 불러오기
+        image = pg.image.load("./assets/lobby_background.png").convert() # 배경 이미지 불러오기
         screen.blit(image, (0, 0)) # 배경화면 그리기
+
+        title_image = pg.image.load("./assets/title.png").convert_alpha()
+        title_image = pg.transform.scale(title_image, (800, 600))
+        title_rect = title_image.get_rect(center=(screen_width//2, screen_height//4))
+        screen.blit(title_image, title_rect)  # 타이틀 그리기
 
         # 메뉴 그리기
         start_y = screen_height//2
         gap = 50
         for i, item in enumerate(menu_items):
-            # --- 테두리용 텍스트 (검은색) ---
-            border_surface = menu_font.render(item["text"], True, BLACK)
-            text_surface = menu_font.render(item["text"], True, item["color"])
-            text_rect = text_surface.get_rect(center=(screen_width//2, start_y + i*gap))
-
-            # 테두리(검은색) 먼저 그림 (상하좌우 1픽셀 이동)
-            for dx, dy in [(-3,0), (3,0), (0,-3), (0,3)]:
-                screen.blit(border_surface, text_rect.move(dx, dy))
-
-            # 본 텍스트(원래 색) 덮어쓰기
-            screen.blit(text_surface, text_rect)
-
-            # rect 저장 (클릭 감지용)
+            # 렌더링용 rect는 미리 계산해서 저장
+            text_surface_for_rect = menu_font.render(item["text"], True, item["color"])
+            text_rect = text_surface_for_rect.get_rect(center=(screen_width//2, start_y + i*gap))
             item["rect"] = text_rect
+
+            # 실제 그리기는 Tool의 함수로 (테두리 색: BLACK)
+            draw_text_with_outline(item["text"], menu_font, item["color"], BLACK, text_rect.center, screen, 2)
 
             # 선택된 메뉴 옆에 삼각형 표시
             if i == selected_index:
@@ -58,21 +57,21 @@ def start_lobby():
                     (text_rect.left - 30, text_rect.centery + 10),
                     (text_rect.left - 10, text_rect.centery)
                 ]
-                py.draw.polygon(screen, WHITE, triangle_points)
+                pg.draw.polygon(screen, WHITE, triangle_points)
 
 
-        py.display.flip()
+        pg.display.flip()
 
         # 이벤트 처리
-        for event in py.event.get():
-            if event.type == py.QUIT:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
                 running = False
-            elif event.type == py.KEYDOWN:
-                if event.key == py.K_DOWN or event.key == py.K_s:
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_DOWN or event.key == pg.K_s:
                     selected_index = (selected_index + 1) % len(menu_items)
-                elif event.key == py.K_UP or event.key == py.K_w:
+                elif event.key == pg.K_UP or event.key == pg.K_w:
                     selected_index = (selected_index - 1) % len(menu_items)
-                elif event.key == py.K_SPACE:
+                elif event.key == pg.K_SPACE:
                     if menu_items[selected_index]["text"] == "play":
                         play()
                     elif menu_items[selected_index]["text"] == "setting":
@@ -81,7 +80,7 @@ def start_lobby():
                     elif menu_items[selected_index]["text"] == "exit":
                         running = False
                     #print(menu_items[selected_index]["text"])
-            elif event.type == py.MOUSEBUTTONDOWN:
+            elif event.type == pg.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos
                 for item in menu_items:
                     if item["rect"] and item["rect"].collidepoint(mouse_pos):
@@ -93,7 +92,7 @@ def start_lobby():
                         #print(f"{item['text']} clicked!")  # 클릭된 메뉴 출력
                         if item["text"] == "exit":
                             running = False
-    py.quit()
+    pg.quit()
     sys.exit()
 
 def play():
