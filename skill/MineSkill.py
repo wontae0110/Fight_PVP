@@ -16,4 +16,4 @@ class MineSkill(Skill):
         self.cooltime = self.init_cooltime  # 쿨타임 초기화
 
         from map.CreateMap import mines
-        mines.add(Mine_entity(user.position, size=10, user=user))  # 지뢰 생성 및 추가
+        mines.add(Mine_entity(pg.Vector2(user.position.x, user.position.y-30), size=(60, 30), user=user))  # 지뢰 생성 및 추가

@@ -5,7 +5,7 @@ from Tool import secondToTick
 
 class Pistol(Gun):
     def __init__(self, image, position: pg.Vector2):
-        super().__init__(image, position, size=80, bullet_speed=20)
+        super().__init__(image, position, size=(80, 80), bullet_speed=20)
         self.init_attack_cooltime = secondToTick(0.2) # 권총의 공격 속도 설정 (발사 간격)
 
     def shoot(self, shooter):
@@ -17,4 +17,4 @@ class Pistol(Gun):
         image = pg.transform.rotate(image, -self.angle)
         # 총알 생성
         from map.CreateMap import bullets
-        bullets.add(Bullet(image, self.position, 20, pg.Vector2(0, self.bullet_speed).rotate(self.angle), shooter, 2)) # 총알 생성
+        bullets.add(Bullet(image, self.position, (20, 20), pg.Vector2(0, self.bullet_speed).rotate(self.angle), shooter, 2)) # 총알 생성

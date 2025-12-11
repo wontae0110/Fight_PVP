@@ -22,7 +22,8 @@ def select_item(title, menu):
     current_index = 0
     running = True
     while running:
-        screen.fill((0, 0, 0)) # 배경화면 그리기
+        background_image = pg.image.load("./assets/setting_background.png").convert()
+        screen.blit(background_image, (0, 0)) # 배경화면 그리기
 
         #제목 표시
         draw_text_with_outline(title, font_current, RED, WHITE, (screen_width // 2, screen_height // 4), screen, 2)
@@ -67,12 +68,15 @@ def select_feature():
 
     # 메뉴 항목
     guns = [
-        "pistol"
+        "pistol",
+        "shotgun",
+        "sniper"
     ]
 
     # 메뉴 항목
     skills = [
-        "mine"
+        "mine",
+        "heal"
     ]
 
     player1_gun = select_item("Player1 Gun", guns)

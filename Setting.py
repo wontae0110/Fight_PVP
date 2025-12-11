@@ -32,8 +32,8 @@ def setting():
     running = True
 
     while running:
-        #screen.blit("./assets/setting_background.png") # 배경화면 그리기
-        screen.fill((0, 0, 0))
+        background_image = pg.image.load("./assets/setting_background.png").convert()
+        screen.blit(background_image, (0, 0)) # 배경화면 그리기
 
         prev_map = setting_option[current_index - 1] if current_index > 0 else ""
         next_map = setting_option[current_index + 1] if current_index < len(setting_option) - 1 else ""

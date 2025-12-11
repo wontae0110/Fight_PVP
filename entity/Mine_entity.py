@@ -3,12 +3,8 @@ from .Entity import Entity
 from .Character import Character
 
 class Mine_entity(Entity):
-    def __init__(self, position: pg.Vector2, size: int, user: Character):
-        #image = pg.image.load("./assets/mine.png").convert_alpha()
-        # 단순한 도형(붉은 원)으로 지뢰 이미지 대체
-        image = pg.Surface((size, size), pg.SRCALPHA)
-        pg.draw.circle(image, (200, 30, 30), (size // 2, size // 2), size // 2)
-        pg.draw.circle(image, (0, 0, 0), (size // 2, size // 2), size // 2, 2)  # 테두리
+    def __init__(self, position: pg.Vector2, size: tuple, user: Character):
+        image = pg.image.load("./assets/mine.png").convert_alpha() # 지뢰 이미지 로드
         super().__init__(image, position, size)
         self.damage = 10  # 지뢰의 데미지 설정
         self.user = user  # 지뢰를 설치한 플레이어

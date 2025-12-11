@@ -9,7 +9,7 @@ def startGame():
     select_feature()  # 아이템 및 스킬 선택
     createMap()  # 맵 및 오브젝트 생성
 
-    from map.CreateMap import players, grounds, bullets, background_image, guns, mines
+    from map.CreateMap import players, grounds, bullets, background_image, guns, mines, particles
     from map.init_setting import TICK_PER_SECOND, screen
 
     # 게임 루프
@@ -45,6 +45,11 @@ def startGame():
         guns.draw(screen)  # 총 그리기
         bullets.draw(screen)  # 총알 그리기
         mines.draw(screen)  # 지뢰 그리기
+        for effect in particles: # 파티클 그리기
+            if not effect.update():
+                particles.remove(effect)
+            else:
+                effect.draw()
 
         for p in players:
             if p.health <= 0:

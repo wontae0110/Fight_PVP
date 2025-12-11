@@ -4,7 +4,7 @@ from item.Pistol import Pistol
 from Tool import secondToTick
 
 class Character(Entity):
-    def __init__(self, type:int, image, position: pg.Vector2, size: int, move_keys: list):
+    def __init__(self, type:int, image, position: pg.Vector2, size: tuple, move_keys: list):
         super().__init__(image, position, size)
         self.type = type # 캐릭터 타입 (1: 플레이어1, 2: 플레이어2)
         self.move_keys = move_keys # [left, right, jump, shoot]
@@ -25,6 +25,9 @@ class Character(Entity):
         if skillType == "mine":
             from skill.MineSkill import MineSkill
             self.skill = MineSkill()
+        elif skillType == "heal":
+            from skill.Heal import Heal
+            self.skill = Heal()
 
     def getGun(self, gunType: str): #image, size: int, bullet_speed: int
         if self.type == 1:
@@ -41,6 +44,22 @@ class Character(Entity):
                 image = pg.image.load("./assets/left_gun.png").convert_alpha()
                 image = pg.transform.rotate(image, 90)
             self.gun = Pistol(image, pg.Vector2((self.rect.left + self.rect.right) / 2, (self.rect.top + self.rect.bottom) / 2)) # 총 생성
+        elif gunType == "shotgun":
+            image = pg.image.load("./assets/shotgun.png").convert_alpha()
+            image = pg.transform.rotate(image, -90)
+            if (self.type == 2):
+                image = pg.transform.flip(image, True, False)
+
+            from item.Shotgun import Shotgun
+            self.gun = Shotgun(image, pg.Vector2((self.rect.left + self.rect.right) / 2, (self.rect.top + self.rect.bottom) / 2)) # 총 생성
+        elif gunType == "sniper":
+            image = pg.image.load("./assets/sniper.png").convert_alpha()
+            image = pg.transform.rotate(image, -90)
+            if (self.type == 2):
+                image = pg.transform.flip(image, True, False)
+
+            from item.Sniper import Sniper
+            self.gun = Sniper(image, pg.Vector2((self.rect.left + self.rect.right) / 2, (self.rect.top + self.rect.bottom) / 2)) # 총 생성
 
     def setLocation(self, position: pg.Vector2): # 위치 설정
         self.position = position
@@ -104,8 +123,8 @@ class Character(Entity):
             return pg.Vector2(0, -self.jump_speed)
         return pg.Vector2(0, 0)
     
-    def damage(self, damage: int): # 피해 받기
-        self.health -= damage
+    def damage(self, damage): # 피해 받기
+        self.health -= int(damage)
         # 데미지 효과 시작
         self.damage_effect_time = self.DAMAGE_EFFECT_DURATION
         # 이미지를 빨간색으로 변경
@@ -115,6 +134,9 @@ class Character(Entity):
         
         if self.health <= 0:
             self.kill()  # 캐릭터 제거
+    
+    def heal(self, amount): # 회복
+        self.health = min(self.health + int(amount), 20)
     
     def update(self):
         # 이동

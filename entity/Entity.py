@@ -1,16 +1,17 @@
 import pygame as pg
 
 class Entity(pg.sprite.Sprite):
-    def __init__(self, image, position: pg.Vector2, size: int):
+    def __init__(self, image, position: pg.Vector2, size: tuple):
         super().__init__()
         self.image = image # 이미지 설정
-        self.image = pg.transform.scale(self.image, (size, size)) # 이미지 크기 조정
+        self.image = pg.transform.scale(self.image, (size[0], size[1])) # 이미지 크기 조정
         self.position = position # 위치 설정
+        self.size = pg.Vector2(size[0], size[1])
 
         self.rect = self.image.get_rect() # 히트박스(직사각형)
         self.rect.topleft = (self.position.x, self.position.y) # 직사각형 위치 설정
 
-        self.speed = 10 # 이동 속도
+        self.speed = 8 # 이동 속도
         self.gravity_speed = 0 # 중력 속도
         self.gravity_acceleration = (0.15) # 중력 가속도
         self.dropping = False # 낙하 중인지 여부

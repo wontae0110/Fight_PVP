@@ -6,9 +6,9 @@ class Skill(metaclass=ABCMeta):
         self.init_cooltime = 0  # 초기 쿨타임 설정(tick 단위)
 
     @abstractmethod
-    def use(self, user):
+    def use(self, user): #스킬 사용
         pass
 
     def update(self):
-        if self.cooltime > 0:
+        if self.cooltime > 0: #쿨타임 감소
             self.cooltime -= 1

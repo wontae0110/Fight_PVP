@@ -2,10 +2,10 @@ import pygame as pg
 from abc import ABCMeta, abstractmethod
 
 class Gun(pg.sprite.Sprite, metaclass=ABCMeta):
-    def __init__(self, image, position: pg.Vector2, size: int, bullet_speed: int):
+    def __init__(self, image, position: pg.Vector2, size: tuple, bullet_speed: int):
         super().__init__()
         self.image = image # 이미지 설정
-        self.image = pg.transform.scale(self.image, (size, size)) # 이미지 크기 조정
+        self.image = pg.transform.scale(self.image, (size[0], size[1])) # 이미지 크기 조정
         self.position = position # 위치 설정
         self.rect = self.image.get_rect()  # 히트박스(직사각형)
         self.rect.center = position  # 직사각형 위치 설정
